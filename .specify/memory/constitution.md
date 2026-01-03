@@ -1,43 +1,166 @@
-<!--
-Sync Impact Report:
-Version change: N/A → 1.0.0
-List of modified principles: N/A (new constitution)
-Added sections: All sections (new constitution created)
-Removed sections: N/A
-Templates requiring updates: ⚠ pending - .specify/templates/plan-template.md, .specify/templates/spec-template.md, .specify/templates/tasks-template.md
-Follow-up TODOs: None
--->
+# speckit.constitution
+# Hackathon II – Master Constitution (Phases I–V)
+# Purpose: Single source of truth for rules, principles, tech stack, and agent behavior
 
-# In-Memory Python Console Todo App Constitution
+---
 
-## Core Principles
+## 1. Project Principles
 
-### Phase I Hackathon Development
-All development must strictly follow the Spec-Kit Plus workflow: Constitution, Specify, Plan, Tasks, Implement. No manual coding is allowed at any stage. All source code must be generated and modified only through Claude Code.
+1. **Spec-Driven Development (SDD)**: 
+   - No code is allowed until specifications (speckit.specify, speckit.plan, speckit.tasks) are fully written and approved.
+   - Workflow: **Specify → Plan → Tasks → Implement**
 
-### Functional Scope (Phase I)
-The application must implement exactly the following features: 1) Add a todo item with a title and optional description, 2) List all todo items with unique IDs and completion status, 3) Update an existing todo item by ID, 4) Delete a todo item by ID, 5) Mark a todo item as complete or incomplete.
+2. **Single Constitution File**:
+   - Only one `speckit.constitution` exists for the entire Hackathon II.
+   - Covers Phase I → V rules, architecture principles, stack constraints, agent conduct.
+   - Cannot be duplicated or modified per phase.
 
-### Technical Constraints
-Programming language: Python. Python version: 3.12.6. Interface: Console / Command Line only. Data storage: In-memory only (no files, no databases). Code must follow clean code principles and be well-structured.
+3. **Phase-Specific Files Allowed**:
+   - `speckit.specify`, `speckit.plan`, `speckit.tasks` can be created per phase.
+   - Each phase’s implementation must reference the **master constitution**.
 
-### Tooling Constraints
-Claude Code must act as the primary General Agent. Spec-Kit Plus must manage all specifications and implementation steps. uv must be used for Python environment management.
+4. **Agent Compliance**:
+   - All AI agents (Claude, Copilot, Gemini, local LLMs) must obey this constitution.
+   - Agents **cannot override rules**, invent code, or bypass workflow.
+   - Agents must reference Task IDs, Specification, and Plan for every implementation.
 
-### Repository Requirements
-The project repository must include: A `/src` directory containing the Python source code, A `/specs/history` directory containing all specification versions, A `CLAUDE.md` file explaining how Claude Code is used, A `README.md` file with setup and usage instructions, This constitution generated via Spec-Kit Plus.
+---
 
-### Development Rules
+## 2. Technology Stack Constraints
 
-All development must strictly follow the Spec-Kit Plus workflow with no deviations.
+| Component         | Allowed Technology / Tool                          |
+|------------------|---------------------------------------------------|
+| Frontend         | OpenAI ChatKit, Next.js (or React-based)          |
+| Backend          | FastAPI (Python), OpenAI Agents SDK               |
+| Database         | Neon Serverless PostgreSQL                        |
+| ORM              | SQLModel                                          |
+| Authentication   | Better Auth                                      |
+| Containerization | Docker Desktop, Gordon (Docker AI)               |
+| Kubernetes       | Minikube (local), AKS / GKE / OKE (cloud)       |
+| Helm             | Helm Charts for all deployments                  |
+| AI DevOps        | kubectl-ai, Kagent                               |
+| Event Streaming  | Kafka (Redpanda Cloud / Strimzi operator)       |
+| Distributed Runtime | Dapr (Pub/Sub, State, Bindings, Jobs, Secrets) |
 
-## Additional Constraints
-The application is a simple, in-memory, command-line Todo application using Python. The goal is to demonstrate spec-driven, agentic development using Claude Code and Spec-Kit Plus.
+**Notes:**  
+- Stack must remain as above. Additional libraries allowed only if fully compatible.  
+- Agents cannot change backend framework, database, or main orchestration method without explicit human approval.
 
-## Development Workflow
-All development must strictly follow the Spec-Kit Plus workflow: Constitution, Specify, Plan, Tasks, Implement. No manual coding is allowed at any stage. All source code must be generated and modified only through Claude Code.
+---
 
-## Governance
-This project is a Phase I hackathon task to build a simple, in-memory, command-line Todo application using Python. The goal is to demonstrate spec-driven, agentic development using Claude Code and Spec-Kit Plus. Any deviation from this constitution or workflow may result in disqualification.
+## 3. Architecture Principles
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-02 | **Last Amended**: 2026-01-02
+1. **Stateless Server Design**:
+   - Backend server should not hold conversation state; use database or Dapr state management.
+   - Scalable, horizontally deployable, resilient.
+
+2. **Microservices Separation**:
+   - Frontend, Chat API, Notification Service, Recurring Task Service, Audit Service must be separate services/pods.
+   - Event-driven interactions via Kafka or Dapr Pub/Sub.
+
+3. **Decoupled Event Handling**:
+   - Task operations, reminders, recurring tasks, real-time updates must be published as events, not direct API calls.
+   - Kafka topics: `task-events`, `reminders`, `task-updates`.
+
+4. **Dapr Abstraction**:
+   - Backend apps must use Dapr sidecars for Pub/Sub, State, Jobs, Secrets, Service Invocation where possible.
+   - Allows backend code to remain clean and backend dependencies swappable.
+
+5. **CI/CD & Cloud-Readiness**:
+   - Phase IV: Local Minikube deployment (containerized, Helm-based).  
+   - Phase V: Cloud deployment (AKS/GKE/OKE), with Dapr, Kafka, monitoring/logging, CI/CD via GitHub Actions.
+
+---
+
+## 4. Agent Conduct Rules
+
+1. **No freestyle coding**:
+   - Agents must not generate code without a Task ID referencing `speckit.tasks`.
+
+2. **Follow Spec Hierarchy**:
+   - Constitution > Specify > Plan > Tasks
+   - Any deviation must be explicitly requested and documented.
+
+3. **Implementation Rules**:
+   - Always reference Task ID, Spec section, and Plan section in code comments.
+   - Agents cannot add endpoints, fields, workflows not present in the spec.
+
+4. **Error Handling & Confirmation**:
+   - Agents must provide graceful error messages.
+   - Always confirm user actions (task created, completed, deleted, updated).
+
+5. **Tool Usage**:
+   - Use MCP tools only for defined operations.
+   - No direct DB manipulations outside defined MCP/Dapr tools.
+
+6. **Phase Compliance**:
+   - Phase-specific features (Phase II: Basic Todos, Phase III: MCP, Phase IV: Kubernetes, Phase V: Advanced Cloud & Kafka) must respect the constitution.
+   - New features require spec updates first.
+
+---
+
+## 5. Security & Operational Guidelines
+
+1. **Secrets Management**:
+   - Use Dapr Secrets API or Kubernetes Secrets.
+   - No API keys or passwords in codebase.
+
+2. **Database Access**:
+   - All conversation and task data must be persisted in Neon PostgreSQL or via Dapr state.
+   - No local in-memory storage for persistent state.
+
+3. **Cloud Domain Security**:
+   - Frontend must register domain in OpenAI allowlist before deploying ChatKit.
+   - Use HTTPS in production environments.
+
+4. **Scaling & Resilience**:
+   - Backend and microservices must be horizontally scalable.
+   - Stateless design ensures resilience to pod restarts.
+
+---
+
+## 6. Testing & Validation Principles
+
+1. **Unit Testing**:
+   - Minimum 90% coverage for backend MCP tool operations.
+
+2. **Integration Testing**:
+   - Verify MCP tool interactions, Dapr Pub/Sub, database state.
+
+3. **Deployment Validation**:
+   - Minikube: Verify pods, services, Helm chart functionality.  
+   - Cloud (AKS/GKE/OKE): Verify Dapr sidecars, Kafka topics, CI/CD pipeline.
+
+---
+
+## 7. Documentation & Submission Rules
+
+1. **Repository Structure**:
+   - `/frontend` → ChatKit frontend
+   - `/backend` → FastAPI backend + MCP tools
+   - `/specs` → speckit files
+   - `/k8s` → Helm charts, Dapr components, Kubernetes manifests
+
+2. **CLAUDE.md & AGENTS.md**:
+   - CLAUDE.md forwards to AGENTS.md for agent instructions.
+   - Agents read these files to execute Spec-Kit commands.
+
+3. **Demo Video**:
+   - Max 90 seconds; demonstrate features and Spec-Driven workflow.
+
+4. **Submission**:
+   - GitHub repo + deployed URLs for each phase.
+   - Partial phases accepted; scoring proportional.
+
+---
+
+## 8. Versioning & Change Control
+
+1. Constitution is immutable for Hackathon II duration.
+2. Only human organizers may update it.
+3. Agents **cannot propose edits to this file**.
+4. Phase-specific changes allowed only in `speckit.specify` and `speckit.plan`.
+
+---
+
+**End of Hackathon II Master Constitution**  
