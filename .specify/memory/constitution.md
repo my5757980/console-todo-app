@@ -1,166 +1,100 @@
-# speckit.constitution
-# Hackathon II – Master Constitution (Phases I–V)
-# Purpose: Single source of truth for rules, principles, tech stack, and agent behavior
+# CONSTITUTION.md
+# 5-Phase Spec-Driven AI Hackathon Project Constitution
+
+## 1. Purpose & Philosophy
+
+**Spec-Driven Development Mandate**: All development must follow the Spec-Kit Plus lifecycle (Specify → Plan → Tasks → Implement). Code is not the primary artifact; specifications, plans, and tasks are the authoritative source of truth for all implementations.
+
+**AI Agents as Digital FTEs**: AI agents are treated as full-time engineering resources with defined roles, responsibilities, and constraints. They must follow the same governance and compliance rules as human engineers.
+
+**Predictability Over Innovation**: The primary goal is predictable, repeatable, and compliant development processes rather than creative or experimental approaches.
+
+## 2. Non-Negotiable Principles
+
+**No Code Without Approved Specs**: No implementation work is permitted without approved specifications in the `.specify/` directory. All code must directly reference approved spec, plan, and task documents.
+
+**Architecture Changes Require Plan Updates**: Any architectural modifications must first be documented in updated plan files before implementation. No ad-hoc architectural changes are allowed.
+
+**Event-First, Async-First Mindset**: All system interactions must be designed as asynchronous, event-driven communications. Direct service coupling is forbidden without Kafka or Dapr Pub/Sub abstraction.
+
+**No Direct Service Coupling**: All microservices must communicate through Kafka (via Dapr Pub/Sub abstraction) rather than direct API calls. Hardcoded service discovery or direct HTTP calls between services are prohibited.
+
+## 3. Agent Rules (MANDATORY)
+
+**No Code Generation Without Task ID**: AI agents must never generate code without a specific Task ID referencing an approved task in the `.specify/tasks/` directory. All implementations must be traceable to specific, approved tasks.
+
+**Request Clarification When Specs Are Missing**: When specifications, plans, or tasks are incomplete or missing, agents must stop immediately and request clarification from human operators. No assumptions are permitted.
+
+**No Assumption of Requirements**: Agents must never "assume" requirements or infer missing specifications. All requirements must be explicitly defined in spec documents.
+
+**Reference Spec + Plan in Every Implementation**: Every code implementation must include references to the relevant specification and plan documents in comments or documentation.
+
+## 4. Phase Enforcement Rules
+
+**Phase I - Core System Setup**: Foundation work only. No frontend, no agents, no Kafka/Dapr, no cloud deployment. Focus on basic architecture and tooling setup.
+
+**Phase II - Frontend + Backend Integration**: Integration work only. No chatbot, no Kubernetes, no cloud deployment. Focus on connecting frontend and backend systems.
+
+**Phase III - Chatbot + Agent Behavior**: AI behavior work only. No Kubernetes, no cloud deployment. Focus on implementing chatbot and agent-specific functionality.
+
+**Phase IV - Local Kubernetes + Kafka/Dapr**: Containerization and event-driven architecture. No cloud deployment. Focus on local Kubernetes (Minikube) and Kafka/Dapr integration.
+
+**Phase V - Cloud Deployment + Production Readiness**: Production deployment work only. Focus on cloud deployment (DigitalOcean) and production readiness.
+
+**No Phase Skipping**: Each phase must be completed before advancing to the next. Partial completion is acceptable but skipping phases is forbidden.
+
+## 5. Architecture Constraints
+
+**Microservices Only**: All systems must be designed as independent microservices. Monolithic architectures are prohibited.
+
+**Kafka via Dapr Pub/Sub Abstraction**: All event streaming must use Kafka through Dapr's Pub/Sub abstraction layer. Direct Kafka SDK usage is forbidden when Dapr is available.
+
+**No Hardcoded Credentials**: No credentials, API keys, or secrets may be hardcoded in source code. All secrets must be managed through proper secret management systems.
+
+**Stateless Services Where Possible**: Services must be designed as stateless where possible to ensure scalability and resilience.
+
+## 6. Tooling Constraints
+
+**Spec-Kit Plus Lifecycle Mandatory**: The complete Spec-Kit Plus lifecycle (specify → plan → tasks → implement) must be followed for all development work.
+
+**MCP Servers for External Access Only**: MCP servers may only be used for external system access and must not be used for internal service communication.
+
+**No Direct SDK Usage When Dapr Available**: When Dapr provides an abstraction for databases, Kafka, or other services, direct SDK usage is prohibited.
+
+## 7. Security & Reliability Rules
+
+**Secrets Management**: All secrets must be stored and accessed through proper secret management systems (Dapr Secrets, Kubernetes Secrets, or cloud provider secret stores). No secrets in code, configuration files, or repositories.
+
+**No Credentials in Code or Repos**: No credentials of any kind may be stored in source code repositories. All credential storage must be external to the codebase.
+
+**Retry, Idempotency, and Failure Handling**: All service interactions must implement proper retry logic, idempotency where appropriate, and graceful failure handling.
+
+## 8. Documentation & Submission Rules
+
+**Required Repository Structure**: Repository must include `.specify/specs/`, `.specify/plans/`, `.specify/tasks/`, and implementation directories with clear separation between specification and implementation.
+
+**Mandatory Documentation**: README, specifications, plans, and tasks documents are mandatory for submission. Missing documentation results in automatic failure.
+
+**Demo Video Constraints**: All demo videos must be 90 seconds or less, demonstrating the implemented functionality and the spec-driven development process.
+
+## 9. Violation Handling
+
+**Immediate Halt on Rule Violations**: When any constitutional rule is violated, all development must stop immediately until human approval is obtained.
+
+**Escalation to Human Required**: All violations must be escalated to human operators for resolution. Agents cannot make exceptions to constitutional rules.
+
+**Documentation of Violations**: All violations and their resolutions must be documented in the project history.
+
+## 10. Final Authority Statement
+
+**Constitution Overrides All**: This Constitution document is the highest authority in the project hierarchy and overrides all other documents, agent creativity, and implementation preferences.
+
+**Predictability Over Cleverness**: All decisions must prioritize predictable, compliant behavior over clever or innovative solutions.
+
+**Specifications Over Code**: The specification documents (spec, plan, tasks) are the authoritative source of truth, not the implementation code.
 
 ---
 
-## 1. Project Principles
-
-1. **Spec-Driven Development (SDD)**: 
-   - No code is allowed until specifications (speckit.specify, speckit.plan, speckit.tasks) are fully written and approved.
-   - Workflow: **Specify → Plan → Tasks → Implement**
-
-2. **Single Constitution File**:
-   - Only one `speckit.constitution` exists for the entire Hackathon II.
-   - Covers Phase I → V rules, architecture principles, stack constraints, agent conduct.
-   - Cannot be duplicated or modified per phase.
-
-3. **Phase-Specific Files Allowed**:
-   - `speckit.specify`, `speckit.plan`, `speckit.tasks` can be created per phase.
-   - Each phase’s implementation must reference the **master constitution**.
-
-4. **Agent Compliance**:
-   - All AI agents (Claude, Copilot, Gemini, local LLMs) must obey this constitution.
-   - Agents **cannot override rules**, invent code, or bypass workflow.
-   - Agents must reference Task IDs, Specification, and Plan for every implementation.
-
----
-
-## 2. Technology Stack Constraints
-
-| Component         | Allowed Technology / Tool                          |
-|------------------|---------------------------------------------------|
-| Frontend         | OpenAI ChatKit, Next.js (or React-based)          |
-| Backend          | FastAPI (Python), OpenAI Agents SDK               |
-| Database         | Neon Serverless PostgreSQL                        |
-| ORM              | SQLModel                                          |
-| Authentication   | Better Auth                                      |
-| Containerization | Docker Desktop, Gordon (Docker AI)               |
-| Kubernetes       | Minikube (local), AKS / GKE / OKE (cloud)       |
-| Helm             | Helm Charts for all deployments                  |
-| AI DevOps        | kubectl-ai, Kagent                               |
-| Event Streaming  | Kafka (Redpanda Cloud / Strimzi operator)       |
-| Distributed Runtime | Dapr (Pub/Sub, State, Bindings, Jobs, Secrets) |
-
-**Notes:**  
-- Stack must remain as above. Additional libraries allowed only if fully compatible.  
-- Agents cannot change backend framework, database, or main orchestration method without explicit human approval.
-
----
-
-## 3. Architecture Principles
-
-1. **Stateless Server Design**:
-   - Backend server should not hold conversation state; use database or Dapr state management.
-   - Scalable, horizontally deployable, resilient.
-
-2. **Microservices Separation**:
-   - Frontend, Chat API, Notification Service, Recurring Task Service, Audit Service must be separate services/pods.
-   - Event-driven interactions via Kafka or Dapr Pub/Sub.
-
-3. **Decoupled Event Handling**:
-   - Task operations, reminders, recurring tasks, real-time updates must be published as events, not direct API calls.
-   - Kafka topics: `task-events`, `reminders`, `task-updates`.
-
-4. **Dapr Abstraction**:
-   - Backend apps must use Dapr sidecars for Pub/Sub, State, Jobs, Secrets, Service Invocation where possible.
-   - Allows backend code to remain clean and backend dependencies swappable.
-
-5. **CI/CD & Cloud-Readiness**:
-   - Phase IV: Local Minikube deployment (containerized, Helm-based).  
-   - Phase V: Cloud deployment (AKS/GKE/OKE), with Dapr, Kafka, monitoring/logging, CI/CD via GitHub Actions.
-
----
-
-## 4. Agent Conduct Rules
-
-1. **No freestyle coding**:
-   - Agents must not generate code without a Task ID referencing `speckit.tasks`.
-
-2. **Follow Spec Hierarchy**:
-   - Constitution > Specify > Plan > Tasks
-   - Any deviation must be explicitly requested and documented.
-
-3. **Implementation Rules**:
-   - Always reference Task ID, Spec section, and Plan section in code comments.
-   - Agents cannot add endpoints, fields, workflows not present in the spec.
-
-4. **Error Handling & Confirmation**:
-   - Agents must provide graceful error messages.
-   - Always confirm user actions (task created, completed, deleted, updated).
-
-5. **Tool Usage**:
-   - Use MCP tools only for defined operations.
-   - No direct DB manipulations outside defined MCP/Dapr tools.
-
-6. **Phase Compliance**:
-   - Phase-specific features (Phase II: Basic Todos, Phase III: MCP, Phase IV: Kubernetes, Phase V: Advanced Cloud & Kafka) must respect the constitution.
-   - New features require spec updates first.
-
----
-
-## 5. Security & Operational Guidelines
-
-1. **Secrets Management**:
-   - Use Dapr Secrets API or Kubernetes Secrets.
-   - No API keys or passwords in codebase.
-
-2. **Database Access**:
-   - All conversation and task data must be persisted in Neon PostgreSQL or via Dapr state.
-   - No local in-memory storage for persistent state.
-
-3. **Cloud Domain Security**:
-   - Frontend must register domain in OpenAI allowlist before deploying ChatKit.
-   - Use HTTPS in production environments.
-
-4. **Scaling & Resilience**:
-   - Backend and microservices must be horizontally scalable.
-   - Stateless design ensures resilience to pod restarts.
-
----
-
-## 6. Testing & Validation Principles
-
-1. **Unit Testing**:
-   - Minimum 90% coverage for backend MCP tool operations.
-
-2. **Integration Testing**:
-   - Verify MCP tool interactions, Dapr Pub/Sub, database state.
-
-3. **Deployment Validation**:
-   - Minikube: Verify pods, services, Helm chart functionality.  
-   - Cloud (AKS/GKE/OKE): Verify Dapr sidecars, Kafka topics, CI/CD pipeline.
-
----
-
-## 7. Documentation & Submission Rules
-
-1. **Repository Structure**:
-   - `/frontend` → ChatKit frontend
-   - `/backend` → FastAPI backend + MCP tools
-   - `/specs` → speckit files
-   - `/k8s` → Helm charts, Dapr components, Kubernetes manifests
-
-2. **CLAUDE.md & AGENTS.md**:
-   - CLAUDE.md forwards to AGENTS.md for agent instructions.
-   - Agents read these files to execute Spec-Kit commands.
-
-3. **Demo Video**:
-   - Max 90 seconds; demonstrate features and Spec-Driven workflow.
-
-4. **Submission**:
-   - GitHub repo + deployed URLs for each phase.
-   - Partial phases accepted; scoring proportional.
-
----
-
-## 8. Versioning & Change Control
-
-1. Constitution is immutable for Hackathon II duration.
-2. Only human organizers may update it.
-3. Agents **cannot propose edits to this file**.
-4. Phase-specific changes allowed only in `speckit.specify` and `speckit.plan`.
-
----
-
-**End of Hackathon II Master Constitution**  
+**Established**: 2026-01-05
+**Version**: 1.0.0
+**Authority**: This Constitution governs all aspects of the 5-Phase Spec-Driven AI Hackathon project and must be followed without exception.
